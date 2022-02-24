@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### 1.1 Tipos de datos
 ### 1.2 Operadores
 ### 1.3 Vectores y matrices
-## 2. Funcions y librerías
+## 2. Funciones y librerías
 ## 3. *Data frames*
 ### 3.1 Variables
 ### 3.2 Factores
@@ -38,6 +38,8 @@ kable(horari)
 ```
 
 # Recursos
+
+[Apuntes del curso.](apunts.html)
 
 [YaRrr! The Pirate's Guide to R](https://bookdown.org/ndphillips/YaRrr/)
 
