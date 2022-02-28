@@ -39,10 +39,14 @@ kable(horari)
 
 # Recursos
 
-[Apuntes del curso.](apunts.html)
+## Datos de ejemplo
+### [Parásitos](Parasite.txt)
+### [Piratas](pirates.txt)
 
-[YaRrr! The Pirate's Guide to R](https://bookdown.org/ndphillips/YaRrr/)
+## [Apuntes del curso.](apunts.html)
 
-[Zuur et al. 2010](https://doi.org/10.1111/j.2041-210X.2009.00001.x)
+## [YaRrr! The Pirate's Guide to R](https://bookdown.org/ndphillips/YaRrr/)
 
-[R para análisis científicos reproducibles](https://swcarpentry.github.io/r-novice-gapminder-es/)
+## [Zuur et al. 2010](https://doi.org/10.1111/j.2041-210X.2009.00001.x)
+
+## [R para análisis científicos reproducibles](https://swcarpentry.github.io/r-novice-gapminder-es/)
