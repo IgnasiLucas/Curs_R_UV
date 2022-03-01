@@ -171,41 +171,84 @@ pre code {
 </div>
 
 
-<div id="estructura-de-r.-conceptos-básicos" class="section level2">
-<h2>1. Estructura de R. Conceptos básicos</h2>
-<div id="tipos-de-datos" class="section level3">
-<h3>1.1 Tipos de datos</h3>
+<div id="sesión-1" class="section level2">
+<h2>Sesión 1</h2>
+<pre class="r"><code># Tipos de datos: 
+
+caracter &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+entero   &lt;- 1:72
+logico   &lt;- c(FALSE, TRUE, FALSE, TRUE)
+reales   &lt;- c(3.1416, 0.54, 7.1, 1.0e-12)
+
+# clases de objetos
+
+vector   &lt;- c(7, 7, 7, 7)
+v2       &lt;- 1:17
+matriz   &lt;- matrix(1:25, nrow = 5)
+
+# Operadores lógicos
+
+vector == c(7, 7, 7, 6)
+vector == c(7, 7, 7, 6) &amp; vector &gt; 7
+
+# Indexar vectores i matrices
+
+matriz[3, 4]
+v2[v2 &lt; 12 &amp; v2 &gt; 5]
+
+# Datos que faltan
+
+matriz[2:3, 4:5] &lt;- NA
+
+# Ejercicio 1. Genera una matriz de 10 x 10 y
+# selecciona la submatriz de las filas pares y
+# las columnas pares.
+
+m1 &lt;- matrix(1:100, nrow = 10, ncol = 10, byrow = FALSE)
+m2 &lt;- m1[c(2,4,6,8,10), c(2,4,6,8,10)]
+m3 &lt;- m1[(1:10) %% 2 == 0, (1:10) %% 2 == 0]
+m4 &lt;- m1[seq(2, 10, by = 2), seq(2, 10, by = 2)]
+
+identical(m2, m3)
+identical(m3, m4)
+
+# Ejercicio 2. Crea una matriz de 5 x 5 con 25
+# de las 26 letras del vector LETTERS. (Sugerencia:
+# usa un índice negativo para eliminar un elemento
+# del vector).
+
+m1 &lt;- matrix(LETTERS, nrow = 5, ncol = 5) # Funciona, pero genera advertencia y deja la &quot;Z&quot; fuera.
+m2 &lt;- matrix(LETTERS[2:26], nrow = 5)     # Funciona, dejando fuera la &quot;A&quot;.
+m3 &lt;- matrix(LETTERS[-17],  nrow = 5)     # Funciona, dejando fuera la &quot;Q&quot;.</code></pre>
 </div>
-<div id="operadores" class="section level3">
-<h3>1.2 Operadores</h3>
-</div>
-<div id="vectores-y-matrices" class="section level3">
-<h3>1.3 Vectores y matrices</h3>
-</div>
-</div>
-<div id="funciones-y-librerías" class="section level2">
-<h2>2. Funciones y librerías</h2>
-</div>
-<div id="data-frames" class="section level2">
-<h2>3. <em>Data frames</em></h2>
-<div id="variables" class="section level3">
-<h3>3.1 Variables</h3>
-</div>
-<div id="factores" class="section level3">
-<h3>3.2 Factores</h3>
-</div>
-<div id="extracción-de-datos" class="section level3">
-<h3>3.3 Extracción de datos</h3>
-</div>
-</div>
-<div id="listas" class="section level2">
-<h2>4. Listas</h2>
-</div>
-<div id="estadística-descriptiva-y-gráficos" class="section level2">
-<h2>5. Estadística descriptiva y gráficos</h2>
-</div>
-<div id="funciones-interesantes" class="section level2">
-<h2>6. Funciones interesantes</h2>
+<div id="sesión-2" class="section level2">
+<h2>Sesión 2</h2>
+<pre class="r"><code>sparrow &lt;- read.table(&quot;http://github.com/ibartomeus/Data/raw/master/example/SparrowsElphick.txt&quot;,
+                      header =TRUE)
+#read.table(file.choose(), header=TRUE)
+head(sparrow)
+class(sparrow)
+class(sparrow[1,1])
+names(sparrow)
+summary(sparrow)
+boxplot(sparrow$tarsus)
+sparrow$tarsus[1:5]
+sparrow$Month
+sparrow$Month &lt;- factor(sparrow$Month)
+head(sparrow$Month)
+summary(sparrow$Month)
+month.name
+month.name[5:10]
+month_sparrow &lt;-month.name[5:10][sparrow$Month]
+
+sparrow$Month &lt;- factor(month_sparrow, levels = month.name[5:10])
+table(sparrow$Month)
+?factor
+summary(sparrow$Species)
+sparrow$SpeciesCode &lt;- factor(sparrow$SpeciesCode,
+                              labels = c(&quot;Sp1&quot;, &quot;Sp2&quot;, &quot;Sp3&quot;))
+summary(sparrow$SpeciesCode) # equivale a table(sparrow$SpeciesCode)
+table(sparrow$SpeciesCode, sparrow$Month)</code></pre>
 </div>
 
 
