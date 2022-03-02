@@ -39,11 +39,22 @@ kable(horari)
 
 # Recursos
 
-## Datos de ejemplo
+## Máquina virtual con R y RStudio
+El enlace siguiente os conduce a una instancia de MyBinder, donde podéis iniciar
+una sesión remota de RStudio. Puede tardar un par de minutos en cargarse. En el
+panel principal debería aparecer un botón de RStudio. Si utilizáis este recurso,
+tened en cuenta que todo lo que ejecutáis estará en un ordenador virtual, que
+desaparecerá cuando se cierre la sesión (¡a veces, accidentalmente!). Por tanto,
+es necesario descargar cualquier archivo creado para poder conservarlo.
+
+[myBinder](https://mybinder.org/v2/gh/IgnasiLucas/T2_testR/HEAD)
+
+## Datos de ejemplo:
 ### [Parásitos](Parasite.txt)
 ### [Piratas](pirates.txt)
 
-## [Apuntes del curso.](apunts.html)
+## [Apuntes del curso](apunts.html)
+Actualizados a dia 1 de marzo.
 
 ## [YaRrr! The Pirate's Guide to R](https://bookdown.org/ndphillips/YaRrr/)
 
