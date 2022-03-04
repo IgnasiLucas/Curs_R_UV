@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+[La página del curso](https://ignasilucas.github.io/Curs_R_UV/).
+
 ## Sesión 1
 
 ```{r sesion1, eval=FALSE}
@@ -64,17 +66,36 @@ m3 <- matrix(LETTERS[-17],  nrow = 5)     # Funciona, dejando fuera la "Q".
 ## Sesión 2
 
 ```{r sesion2, eval=FALSE}
+
+# DATA FRAMES
+
 sparrow <- read.table("http://github.com/ibartomeus/Data/raw/master/example/SparrowsElphick.txt",
                       header =TRUE)
-#read.table(file.choose(), header=TRUE)
+# Para abrir un archivo ya presente en nuestro disco duro:
+# sparrow <- read.table('SparrowsElphick.txt', header=TRUE)  # no hace falta indicar la dirección completa
+                                                             # si está en la carpeta del proyecto
+# sparrow <- read.table(file.choose(), header=TRUE)  # para seleccionar el archivo interactivamente
+
 head(sparrow)
 class(sparrow)
 class(sparrow[1,1])
 names(sparrow)
 summary(sparrow)
 boxplot(sparrow$tarsus)
+
+# podemos acceder a partes de los datos combinando $ y []:
 sparrow$tarsus[1:5]
+
 sparrow$Month
+
+# Factores 
+# Los factores se utilizan para categorizar los datos y almacenarlos como niveles.
+# Se pueden almacenar tanto como cadenas de caracteres (por ej. "Macho"/"Hembra")
+# como enteros (1, 2, 3, ...).
+# Se usan en el análisis de datos. Por ejemplo, para analizar la relación entre 
+# peso y longitud controlando por el factor sexo. 
+# 
+# Vamos a convertir Month en un factor y codificarlo como cadena con month.name
 sparrow$Month <- factor(sparrow$Month)
 head(sparrow$Month)
 summary(sparrow$Month)
@@ -84,7 +105,8 @@ month_sparrow <-month.name[5:10][sparrow$Month]
 
 sparrow$Month <- factor(month_sparrow, levels = month.name[5:10])
 table(sparrow$Month)
-?factor
+
+# Ejercicio - convertir SpeciesCode 1, 2, 3 en factor con nombres "Sp1", "Sp2", "Sp3"
 summary(sparrow$Species)
 sparrow$SpeciesCode <- factor(sparrow$SpeciesCode,
                               labels = c("Sp1", "Sp2", "Sp3"))
@@ -95,55 +117,276 @@ table(sparrow$SpeciesCode, sparrow$Month)
 ## Sesión 3
 
 ```{r sesion3, eval=FALSE}
-table(sparrow$Sex)
-sparrow$Sex <-factor(sparrow$Sex, labels= c("J", "M", "F"))
+# También vamos a codificar Sex como factor
+table(sparrow$Sex)  # hay solo 3 valores 0, 4 y 5
+
+# No sabemos a que género corresponde cada valor. Para trabajar nosotros, vamos a suponer que 
+# 0 es juvenil, 4 Macho y 5 hembra.
+sparrow$Sex <- factor(sparrow$Sex, labels=c('J','M','F'))
+
+# Podemos usar factores para seleccionar datos 
 sparrow.sp1 <- sparrow[sparrow$SpeciesCode == "Sp1", ]
-sparrow.sp1_tar22 <- sparrow[sparrow$SpeciesCode == "Sp1" &
-                               sparrow$tarsus <= 22, ]
-sparrow_juneWt <- sparrow[sparrow$Month == "June" &
-                            sparrow$wt > median(sparrow$wt), ]
-rm(sparrow_juneWt)
+sparrow.sp2_3 <- sparrow[sparrow$SpeciesCode != "Sp1", ]
+
+# o combinar factores y variable categóricas:
+sparrow.sp1_tar22 <- sparrow[sparrow$SpeciesCode=="Sp1" 
+                             & sparrow$tarsus <= 22, ]
+# == != > < >= <= 
+
+# Ejercicio: crear dataframe selecionando pájaros muestreados en Junio cuyo wt es
+# superior a la mediana de todos los pájaros
+# solución:
+sparrow.JuneMedwt <- sparrow[sparrow$wt > median(sparrow$wt) &
+                               sparrow$Month == "June", ]
+
+# explicar rm()
+rm(sparrow.sp2_3) # rm(list=ls()) borra todo el environment
 
 # sort y order
-
 sparrow$tarsus
 sort(sparrow$tarsus)
 order(sparrow$tarsus)
-sparrow.orderTarsus <- sparrow[order(sparrow$tarsus), ]
-rm(sparrow.orderTarsus)
-#LISTAS
-sparrow.sp.list <- split(sparrow, sparrow$SpeciesCode)
-sparrow.sp.list
-identical(sparrow.sp1, sparrow.sp.list$Sp1)
-sparrow.sp.list$Sp1$tarsus
-identical(sparrow.sp1, sparrow.sp.list[[1]])
-sparrow.sp.list[[1]]$tarsus
-sparrow.sp.list[[1]][, 3]
-lista.loca <- list(letters[1:5], matrix(rnorm(25),5), pi)
-lista.loca
-lista.loca <- list(letras=letters[1:5], matriz= matrix(rnorm(25),5),
-                   PI = pi)
-lista.loca$letras
-# list-like objects
+o <- order(sparrow$tarsus)
+sparrow.ordertarsus <- sparrow[o, ] ### ordeno todo el df
+                                    ## por valores de tarso
+rm(sparrow.ordertarsus)
+
+# LISTAS (list) #######################################################
+# Podemos usar split para dividir el dataframe sparrow por SpeciesCode. 
+# Se generan 3 dataframes por cada SpeciesCode que se almacenan como lista.
+sparrow.sp.split <- split(sparrow, sparrow$SpeciesCode)
+class(sparrow.sp.split)
+names(sparrow.sp.split)
+#sparrow.sp.split$Sp1 es lo mismo que sparrow.sp.split[[1]]
+identical(sparrow.sp.split$Sp1, sparrow.sp.split[[1]])
+
+# sparrow.sp.split$Sp1$tarsus es lo mismo que sparrow.sp.split[[1]][ ,3]
+identical(sparrow.sp.split$Sp1$tarsus, sparrow.sp.split[[1]][ ,3])
+
+# Las listas pueden incluir objetos de diferentes tipos
+obj1 <- letters[1:5]
+obj2 <- matrix(rnorm(25),5)
+obj3 <- pi
+lista_loca <- list(obj1, obj2, obj3)                                
+lista_loca[[2]]
+
+# como dar nombres a los elementos de la lista
+lista_loca <- list(letras=obj1, matriz=obj2, PI=obj3)                             
+lista_loca$PI
+
+# list-like objects 
+# por ej. al hacer un test t con dos muestras 
+?t.test
+
 x <- rnorm(10)
 y <- rnorm(12)
-t.test(x, y)
-T <- t.test(x, y)
-class(T)
-names(T)
-T$p.value
-T$method
+t.test(x, y) # ¿Qué es esto? Respuesta -> es un objeto
 
-# ESTADISTICA DESCRIPTIVA Y GRAFICAS
+result_t <- t.test(x, y)
+class(result_t) # es una clase de objeto propia del test, pero funciona parecido
 
+                # a una lista
+names(result_t) # Ver explicación de cada elemento en help(result_t)
+class(result_t$statistic) # 1 número
+class (result_t$p.value) # 1 número
+class (result_t$conf.int) # es un vector númerico
+class(result_t$method) # es una cadena de caracteres
+
+# De modo similar a una lista result_t almacena varios objetos que son
+# de tipos diferentes
+
+# ESTADISTICA DESCRIPTIVA Y GRAFICAS ##########################################
 # mean() median() sd() var() summary() range() quantile()
+mean(sparrow$tarsus)
 
+# Computar estatdísticos por factores con tapply()
 tapply(sparrow$tarsus, sparrow$SpeciesCode, mean)
-tapply(sparrow$tarsus, list(sparrow$SpeciesCode, sparrow$Sex), mean)
-with(sparrow, tapply(tarsus, list(SpeciesCode, Sex, Month), mean))
-with(sparrow, tapply(tarsus, list(SpeciesCode, Month,Sex), mean))
-with(sparrow, tapply(tarsus, list(SpeciesCode, Month,Sex), range))
-Range <- with(sparrow, tapply(tarsus, list(SpeciesCode, Month,Sex),
-                              range))
+
+# ¿Podemos con dos factores? Respuesta -> Sí
+tapply(sparrow$tarsus, list(sparrow$SpeciesCode, sparrow$Month), mean)
+
+# ¿Tenemos que escribir siempre todo? Respuesta -> No
+with(sparrow, tapply(tarsus, list(SpeciesCode, Month, Sex), mean))
+
+# pero...
+with(sparrow, tapply(tarsus, list(SpeciesCode, Month, Sex), range))
+
+class(with(sparrow, tapply(tarsus, list(SpeciesCode, Month, Sex), range)))
+
+# Vemos que devuelve un ARRAY pero no muestra todos los resultados de range.
+# (Los arrays son matrices en 3 dimensiones - ver ?array)
+# ¿Cómo acceder?
+
+range_sparrow <- with(sparrow, tapply(tarsus, list(SpeciesCode, Month, Sex),
+                                      range))
+range_sparrow[1,1,2] # El último elemento identifica la matriz
+
+range_sparrow[1,1, "M"] # Es lo mismo
 ```
 
+## Sesión 4
+
+```{r sesion4, eval=FALSE}
+# Para demostración de gráficas vamos a usar el df sparrow.sp1. 
+head(sparrow.sp1)
+
+# En https://www.r-graph-gallery.com/ podéis encontrar bastante información sobre
+# gráficos en R
+
+# Las 7 primeras variables son continuas.
+# pairs() es una función útil para ver relaciones entre variables contínuas en un df
+pairs(sparrow.sp1[, 1:7]) # Podemos identificar varias observaciones anómalas
+                          # (puntos muy lejos de la nube de puntos)
+
+# Scatterplots -> plot(x,y)
+
+plot(sparrow.sp1$wingcrd, sparrow.sp1$flatwing)
+
+# Vamos a usar jitter() porque parece que muchos puntos se superponen. ?jitter
+with(sparrow.sp1, plot(jitter(wingcrd), jitter(flatwing)))
+
+# Hemos usado with(), pero con gráficos es mejor usar attach() - detach()
+
+attach(sparrow.sp1)
+# Ver relación por sexo aplicando un color diferente para cada nivel del factor 
+plot(jitter(wingcrd), jitter(flatwing), col = Sex)
+
+# R ha aplicado colores por defecto. Podemos personalizar nuestra selección de
+# colores. Buscar "colors in R" en la web
+
+colorSex <- c("orange", "violet", "cyan")
+plot(jitter(wingcrd), jitter(flatwing), col = colorSex[sparrow.sp1$Sex])
+
+# Fijaos qué manera más elegante de indexar los colores. Esto lo hicimos tb
+# cuando recodificamos Month con los nombres de mes. En realidad, hemos creado un
+# vector usando dos vectores, colorSex y la columna Sex del df:
+colorSex[sparrow.sp1$Sex]
+
+# Vamos a ajustar la estética
+?plot
+plot(jitter(wingcrd), jitter(flatwing), col = colorSex[sparrow.sp1$Sex],
+     pch = 16, cex = 0.6, xlab = "Wincrd (mm)", ylab = "Flatwing (mm)")
+
+# Añadimos una línea regresión 
+LR <- lm (flatwing ~ wingcrd) # Explicar fórmula (~)
+abline(LR, col = "darkblue")
+
+# abline() sirve para añadir líneas rectas. Por ejemplo, trazar una línea vertical
+# en el valor medio de wingcrd:
+
+abline(v = mean(wingcrd), lty = 3, col ="darkred")
+
+# Otras funciones interesantes son points() y lines() que añaden puntos y líneas no rectas
+# a un plot. Por ejemplo, añadir un punto en la mediana de las dos variables:
+
+points(median(wingcrd), median(flatwing), pch = 17, col = "darkred", cex = 2)
+
+detach(sparrow.sp1) # Siempre conviene cerrar attach() con detach()
+
+# EJERCICIO. Volver a general el plot y añadir una línea de regresión para cada
+# sexo. La línea tiene que ser del mismo color que los puntos de cada nivel del
+# factor.
+
+  # Solución:
+attach(sparrow.sp1)
+plot(jitter(wingcrd), jitter(flatwing), col = colorSex[Sex], pch = 16,
+     cex = 0.6, xlab = "Wincrd (mm)", ylab = "Flatwing (mm)")
+
+LRJ <- lm(flatwing[Sex == "J"] ~ wingcrd[Sex == "J"])
+LRM <- lm(flatwing[Sex == "M"] ~ wingcrd[Sex == "M"])
+LRF <- lm(flatwing[Sex == "F"] ~ wingcrd[Sex == "F"])
+abline(LRJ, col = colorSex[1])
+abline(LRM, col = colorSex[2])
+abline(LRF, col = colorSex[3])
+detach(sparrow.sp1)
+
+# Como nota aparte, podemos calcular un modelo de regresión único 
+LRall <- lm(sparrow$flatwing ~ sparrow$wingcrd*sparrow$Sex + sparrow$Sex)
+
+# para rematar
+mtext("Relación entre Flatwing y Wincrd por sexo", cex = 1.5, line = 1)
+
+# También podemos añadir texto en cualquier punto del plot
+
+text(53, 67, "R mola mazo", font = 4)
+
+# O añadir legendas
+
+?legend
+
+legend(65, 60, c("Juvenil", "Macho", "Hembra"), col = colorSex, pch = 16)
+
+# Otras gráficas
+  # Diagramas de cajas
+boxplot(sparrow.sp1$flatwing[sparrow.sp1$Sex == "J"],
+        sparrow.sp1$flatwing[sparrow.sp1$Sex == "M"],
+        sparrow.sp1$flatwing[sparrow.sp1$Sex == "F"])
+
+# Más simple usando fórmula (~):
+boxplot(sparrow.sp1$flatwing ~ sparrow.sp1$Sex)
+
+# Vamos a ajustar la estética
+?boxplot
+boxplot(sparrow.sp1$flatwing ~ sparrow.sp1$Sex,
+        names = c("juvenil", "macho", "hembra"), xlab = "Género", 
+        ylab = "Flatwing (mm)", col = colorSex)
+
+# Aún podemos ajustar algo más y añadir "notches" (Crawley 2013 - The R Book). 
+
+boxplot(sparrow.sp1$flatwing ~ sparrow.sp1$Sex,
+        names = c("juvenil", "macho", "hembra"), xlab = "Género", 
+        ylab = "Flatwing (mm)", col = colorSex, notch = TRUE, cex.lab = 1.5)
+
+  # Histogramas y densidad
+hist(sparrow.sp1$flatwing)
+
+plot(density(sparrow.sp1$flatwing)) # la función genérica plot se interpreta
+                                    # segun el tipo de datos suministrado
+                                    # por ejemplo:
+library(ape) # Aquí antes hay que instalar la librería ape si no está instalada
+             # install.packages(ape)
+
+data(bird.orders) # Las librerías llevan bases de datos internas que sirven para
+                  # demostrar cómo usar las funciones. bird.orders es una
+                  # filogenia.
+
+plot(bird.orders) # Ha interpretado plot como plot.phylo() que es una
+                  # función de ape.
+
+# Combinar diferentes plots en un panel
+# Ver https://www.statmethods.net/advgraphs/layout.html
+
+attach(sparrow.sp1) # es parecido a la función with que hemos visto
+par(mfrow=c(1,3))
+plot(jitter(wingcrd), jitter(flatwing), col = colorSex[sparrow.sp1$Sex],
+     pch = 16, cex = 0.6, xlab = "Wincrd (cm)", ylab = "Flatwing (cm)")
+
+# Añadir linea regresión al plot
+abline(lm (flatwing ~ wingcrd) )
+
+boxplot(flatwing ~ Sex,
+        names = c("juvenil", "macho", "hembra"), xlab = "Género", 
+        ylab = "Flatwing (cm)", col = colorSex)
+plot(density(flatwing))
+# Por estética rellenamos el plot con polygon()
+polygon(density(flatwing), col="darkred", border="darkblue")
+
+detach(sparrow.sp1) 
+
+# Explicar como exportar gráficos
+
+# Sin demasiado trabajo, podemos producir paneles de figuras listos para publicar
+# Por ej. todas las figuras que aparecen en  https://doi.org/10.1111/2041-210X.13588
+# las hicimos solo con R. No añadimos ni ajustamos nada con otros programas. 
+
+# Ejercicio: reprentar en 3 gráficas por cada Sexo en un mismo panel y en vertical
+# la relación entre las variables culment y nalospi. 
+
+# Solución
+attach(sparrow.sp1)
+par(mfrow=c(3,1))
+plot(culmen[Sex == "J"], nalospi[Sex == "J"])
+plot(culmen[Sex == "M"], nalospi[Sex == "M"])
+plot(culmen[Sex == "F"], nalospi[Sex == "F"])
+detach(sparrow.sp1)
+```
