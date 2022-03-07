@@ -2,7 +2,7 @@
 title: "Curso de R -- Máster en Biodiversidad y Conservación"
 subtitle: "Universitat de València"
 author: "Juan Antonio Balbuena & J. Ignacio Lucas Lledó"
-date: "9/2/2022"
+date: "7/3/2022"
 output: html_document
 ---
 
@@ -55,7 +55,7 @@ es necesario descargar cualquier archivo creado para poder conservarlo.
 ### [Gorriones](http://github.com/ibartomeus/Data/raw/master/example/SparrowsElphick.txt)
 
 ## [Apuntes del curso](apunts.html)
-Actualizados a dia 3 de marzo de 2022.
+Actualizados a dia 7 de marzo de 2022.
 
 ## [YaRrr! The Pirate's Guide to R](https://bookdown.org/ndphillips/YaRrr/)
 

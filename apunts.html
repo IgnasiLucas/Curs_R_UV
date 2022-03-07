@@ -166,7 +166,7 @@ pre code {
 
 <h1 class="title toc-ignore">Curso de R 2022</h1>
 <h4 class="author">Juan Antonio Balbuena &amp; J. Ignacio Lucas Lledó</h4>
-<h4 class="date">24/2/2022</h4>
+<h4 class="date">7/3/2022</h4>
 
 </div>
 
@@ -542,6 +542,79 @@ plot(culmen[Sex == &quot;J&quot;], nalospi[Sex == &quot;J&quot;])
 plot(culmen[Sex == &quot;M&quot;], nalospi[Sex == &quot;M&quot;])
 plot(culmen[Sex == &quot;F&quot;], nalospi[Sex == &quot;F&quot;])
 detach(sparrow.sp1)</code></pre>
+</div>
+<div id="sesión-5" class="section level2">
+<h2>Sesión 5</h2>
+<pre class="r"><code>## Cargar datos de piratas
+piratas &lt;- read.table(&quot;https://ignasilucas.github.io/Curs_R_UV/pirates.txt&quot;,
+                      header = TRUE,
+                      sep = &quot;\t&quot;,
+                      quote = &#39;&quot;&#39;)
+summary(piratas)
+table(piratas$fav.pixar)
+
+# Ejercicio: representar gráficamente la relación
+# entre el peso y la altura de los piratas.
+
+plot(piratas$height, piratas$weight)
+
+# Dividir un data frame, aplicar una función y juntar los resultados:
+
+mean.beard.1 &lt;- tapply(piratas$beard.length,
+                       piratas$sex,
+                       mean)
+
+mean.beard.2 &lt;- sapply(c(&#39;female&#39;, &#39;male&#39;, &#39;other&#39;),
+                     function(x) {
+                       mean(piratas[piratas$sex == x,
+                                    &#39;beard.length&#39;])
+                     })
+
+# Ahora con el paquete plyr
+
+library(plyr)
+
+ddply(piratas,
+      c(&#39;sex&#39;,&#39;college&#39;),
+      function(x) mean(x$beard.length))
+
+resumen &lt;- ddply(piratas,
+      c(&#39;sex&#39;, &#39;college&#39;),
+      function(x) {
+        data.frame( mean.beard = mean(x$beard.length),
+                    mean.height = mean(x$height),
+                    mean.sword.time = mean(x$sword.time))
+      })
+resumen
+
+
+# Ejercicio: Obtener una tabla resumen con el tiempo medio que
+# tardan en desnefundar la espada en función del tipo de espada.
+
+mean.time &lt;- ddply(piratas,
+                   &#39;sword.type&#39;,
+                   function(x) mean(x$sword.time))
+
+# La función d_ply no devuelve ningún resultado. Sólo ejecuta una
+# función por cada sección del data frame original. Se puede usar
+# para producir gráficos, por ejemplo:
+
+par(mfrow = c(3,2))
+d_ply(piratas,
+      c(&#39;sex&#39;, &#39;college&#39;),
+      function(x) plot(x$grogg, x$sword.time,
+                       main = paste(x[1,&#39;sex&#39;],
+                                    x[1,&#39;college&#39;]),
+                       log = &#39;y&#39;))
+par(mfrow = c(1,1))
+
+# Funciones
+# =========
+
+plot.something &lt;- function(x, A=0, B=7){
+  plot(x$grogg, x$sword.time)
+  return(length(x))
+} </code></pre>
 </div>
 
 
